@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
-import { ChakraProvider, Box, Flex } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import { ChakraProvider, Flex } from '@chakra-ui/react'
 import { SDK, SDKProvider } from '../sdk'
+import { CMSProvider } from '../cms'
 
 const sdkConfig = {
   proxyPath: `http://localhost:3000/api/proxy`,
@@ -15,18 +16,31 @@ const sdkConfig = {
 const sdk = new SDK(sdkConfig)
 
 function MyApp({ Component, pageProps }) {
+  const [cms, setCMS] = useState()
+
   useEffect(() => {
     sdk.login()
+    ;(async () => {
+      const extSDK = await import('dc-extensions-sdk')
+      const cms = await extSDK.init()
+      setCMS(cms)
+    })()
   }, [])
 
+  if (!cms) {
+    return null
+  }
+
   return (
-    <SDKProvider value={sdk}>
-      <ChakraProvider>
-        <Flex direction="column" py={6}>
-          <Component {...pageProps} />
-        </Flex>
-      </ChakraProvider>
-    </SDKProvider>
+    <CMSProvider value={cms}>
+      <SDKProvider value={sdk}>
+        <ChakraProvider>
+          <Flex direction="column" py={6}>
+            <Component {...pageProps} />
+          </Flex>
+        </ChakraProvider>
+      </SDKProvider>
+    </CMSProvider>
   )
 }
 

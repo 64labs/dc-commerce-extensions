@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   AspectRatio,
   Box,
@@ -25,9 +25,11 @@ import {
 } from '@chakra-ui/react'
 import { SearchIcon, SmallAddIcon } from '@chakra-ui/icons'
 import { useSDK } from '../../sdk'
+import { useCMS } from '../../cms'
 
 export default function ProductSelector() {
   const sdk = useSDK()
+  const cms = useCMS()
 
   const [state, setState] = useState({
     loading: false,
@@ -38,7 +40,6 @@ export default function ProductSelector() {
   })
 
   const [mouseOverItem, setMouseOverItem] = useState()
-  const [selectionsExpanded, setSelectionsExpanded] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
 
   const mergeState = (data) => {
@@ -49,21 +50,31 @@ export default function ProductSelector() {
     setMouseOverItem((itemId) => (itemId === productId ? undefined : productId))
   }
 
-  const addProductSelection = async (item) => {
-    setState((_state) => ({ ..._state, selections: [...state.selections, item] }))
+  const addProductSelection = async (_item) => {
+    const item = {
+      id: _item.productId,
+      name: _item.productName,
+      price: _item.price,
+      image: _item.image,
+      color: _item.variationAttributes.find((varAttr) => varAttr.id === 'color')?.values[0],
+    }
+    const updatedSelections = [...state.selections, { ...item, id: item.id }]
+    setState((_state) => ({ ..._state, selections: updatedSelections }))
+    updateFieldValue(updatedSelections)
 
-    const product = await sdk.shopperProducts.getProduct({ parameters: { id: item.productId, allImages: true } })
+    const product = await sdk.shopperProducts.getProduct({ parameters: { id: item.id, allImages: true } })
     setState((_state) => ({ ..._state, productsById: { ..._state.productsById, [product.id]: product } }))
   }
 
   const removeProductSelection = async (itemIndex) => {
     const updatedSelections = [...state.selections.slice(0, itemIndex), ...state.selections.slice(itemIndex + 1)]
     setState((_state) => ({ ..._state, selections: updatedSelections }))
+    updateFieldValue(updatedSelections)
   }
 
   const setSelectionImage = (itemIndex, imageIndex, image) => {
     const selectedItem = { ...state.selections[itemIndex] }
-    selectedItem.selectedImage = image
+    selectedItem.image = image
     selectedItem.selectedImageIndex = imageIndex
     const updatedSelections = [
       ...state.selections.slice(0, itemIndex),
@@ -71,17 +82,27 @@ export default function ProductSelector() {
       ...state.selections.slice(itemIndex + 1),
     ]
     setState((_state) => ({ ..._state, selections: updatedSelections }))
+    updateFieldValue(updatedSelections)
   }
 
   const setSelectionColor = (itemIndex, color) => {
     const selectedItem = { ...state.selections[itemIndex] }
-    selectedItem.selectedColor = color
+    selectedItem.color = color
     const updatedSelections = [
       ...state.selections.slice(0, itemIndex),
       selectedItem,
       ...state.selections.slice(itemIndex + 1),
     ]
     setState((_state) => ({ ..._state, selections: updatedSelections }))
+    updateFieldValue(updatedSelections)
+  }
+
+  const updateFieldValue = async (selections) => {
+    try {
+      await cms.field.setValue(selections)
+    } catch (err) {
+      console.log(err.message)
+    }
   }
 
   const handleSearchInput = (e) => {
@@ -103,7 +124,27 @@ export default function ProductSelector() {
     }
   }
 
-  console.log(state.selections)
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const selections = (await cms.field.getValue()) || []
+        mergeState({ selections })
+
+        const { data } = await sdk.shopperProducts.getProducts({
+          parameters: { ids: selections.map((item) => item.id).join(','), allImages: true },
+        })
+        mergeState({
+          productsById:
+            data?.reduce((acc, product) => {
+              return { ...acc, [product.id]: product }
+            }, {}) || {},
+        })
+      } catch (err) {
+        console.log(err.message)
+      }
+    })()
+  }, [])
+
   return (
     <Container maxW="container.md">
       <Stack spacing={6}>
@@ -117,7 +158,7 @@ export default function ProductSelector() {
               <Accordion allowMultiple>
                 <Stack>
                   {state.selections.map((item, itemIndex) => {
-                    const product = state.productsById[item.productId]
+                    const product = state.productsById[item.id]
 
                     const colorAttributeValues = product?.variationAttributes.find((varAttr) => varAttr.id === 'color')
                       .values
@@ -134,7 +175,12 @@ export default function ProductSelector() {
                       (variant) => variant.productId === item.representedProduct?.id
                     )
 
-                    const selectedColorValue = item.selectedColor?.value || selectedVariant?.variationValues.color
+                    const selectedColorValue = item.color?.value || selectedVariant?.variationValues.color
+
+                    const productImagesForSelectedColor =
+                      productImages?.find(
+                        (group) => group.variationAttributes[0]?.values[0].value === selectedColorValue
+                      )?.images || []
 
                     const getSwatch = (value) => {
                       const group = productSwatches?.find(
@@ -145,16 +191,11 @@ export default function ProductSelector() {
                       )
                     }
 
-                    const productImagesForSelectedColor =
-                      productImages?.find(
-                        (group) => group.variationAttributes[0]?.values[0].value === selectedColorValue
-                      )?.images || []
-
                     return (
                       <AccordionItem
                         bg="white"
                         opacity={product ? 1 : 0.4}
-                        key={`selection-${item.productId}-${itemIndex}`}
+                        key={`selection-${item.id}-${itemIndex}`}
                         border={0}
                       >
                         {({ isExpanded }) => (
@@ -187,10 +228,10 @@ export default function ProductSelector() {
 
                                 <Box ml={6} flex={1}>
                                   <Text fontSize="sm" fontWeight="medium">
-                                    {item.productName}
+                                    {item.name}
                                   </Text>
                                   <Text fontSize="sm" color="gray.500">
-                                    Product ID:{item.productId}
+                                    Product ID: {item.id}
                                   </Text>
                                 </Box>
 
@@ -235,9 +276,7 @@ export default function ProductSelector() {
                                           key={`${image.disBaseLink}-imageIndex`}
                                           border="2px solid"
                                           borderColor={
-                                            item.selectedImage?.disBaseLink === image.disBaseLink
-                                              ? 'blue.500'
-                                              : 'transparent'
+                                            item.image?.disBaseLink === image.disBaseLink ? 'blue.500' : 'transparent'
                                           }
                                           onClick={() => setSelectionImage(itemIndex, imageIndex, image)}
                                         >
@@ -310,7 +349,7 @@ export default function ProductSelector() {
                   <Text fontSize="sm">Showing 1 - 25 of {state.results.total}</Text>
                   <Stack>
                     {state.results?.hits?.map((hit) => {
-                      const selectedCount = state.selections.filter((item) => item.productId === hit.productId).length
+                      const selectedCount = state.selections.filter((item) => item.id === hit.productId).length
 
                       return (
                         <Flex

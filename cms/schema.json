@@ -1,0 +1,66 @@
+{
+  "title": "Products",
+  "type": "array",
+  "items": {
+    "title": "Product",
+    "type": "object",
+    "properties": {
+      "id": {
+        "title": "Product ID",
+        "type": "string"
+      },
+      "name": {
+        "title": "Product Name",
+        "type": "string"
+      },
+      "price": {
+        "title": "Product Price",
+        "type": "number"
+      },
+      "image": {
+        "title": "Product Image",
+        "type": "object",
+        "properties": {
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "alt": {
+            "title": "Alt",
+            "type": "string"
+          },
+          "disBaseLink": {
+            "title": "DIS Link",
+            "type": "string"
+          },
+          "link": {
+            "title": "Link",
+            "type": "string"
+          }
+        }
+      },
+      "color": {
+        "title": "Selected Color",
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "ui:extension": {
+    "name": "product-selector-v2",
+    "height": 600
+  }
+}
