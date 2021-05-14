@@ -4,7 +4,7 @@ import { SDK, SDKProvider } from '../sdk'
 import { CMSProvider } from '../cms'
 
 const sdkConfig = {
-  proxyPath: `https://dc-commerce-extensions.vercel.app/product-selector/api/proxy`,
+  proxyPath: `https://dc-commerce-extensions.vercel.app/api/proxy`,
   parameters: {
     clientId: 'e4289502-7960-4387-b48a-a030e447800e',
     organizationId: 'f_ecom_bbsz_stg',
