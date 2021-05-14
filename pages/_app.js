@@ -23,6 +23,7 @@ function MyApp({ Component, pageProps }) {
     ;(async () => {
       const extSDK = await import('dc-extensions-sdk')
       const cms = await extSDK.init()
+      cms.frame.startAutoResizer()
       setCMS(cms)
     })()
   }, [])
@@ -35,7 +36,7 @@ function MyApp({ Component, pageProps }) {
     <CMSProvider value={cms}>
       <SDKProvider value={sdk}>
         <ChakraProvider>
-          <Flex direction="column" py={6}>
+          <Flex direction="column">
             <Component {...pageProps} />
           </Flex>
         </ChakraProvider>
