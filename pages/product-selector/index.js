@@ -318,7 +318,7 @@ export default function ProductSelector() {
               <CloseButton onClick={() => setShowSearch(false)} />
             </Flex>
 
-            <Stack spacing={6}>
+            <Stack spacing={6} minHeight="250px">
               <Box as="form" position="relative" onSubmit={handleSearch}>
                 <InputGroup alignItems="center">
                   <Input
