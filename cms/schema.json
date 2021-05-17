@@ -5,6 +5,10 @@
     "title": "Product",
     "type": "object",
     "properties": {
+      "guid": {
+        "title": "guid",
+        "type": "string"
+      },
       "id": {
         "title": "Product ID",
         "type": "string"
