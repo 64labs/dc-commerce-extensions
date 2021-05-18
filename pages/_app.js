@@ -14,7 +14,7 @@ function MyApp({ Component, pageProps }) {
     proxyPath:
       process.env.NODE_ENV === 'development'
         ? `http://localhost:3000/api/proxy`
-        : 'https://dc-commerce-extensions.vercel.app/api/proxy',
+        : `https://${process.env.VERCEL_URL}/api/proxy`,
     parameters: {
       clientId: 'e4289502-7960-4387-b48a-a030e447800e',
       organizationId: 'f_ecom_bbsz_stg',
