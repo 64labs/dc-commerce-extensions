@@ -14,7 +14,7 @@ function MyApp({ Component, pageProps }) {
     proxyPath:
       process.env.NODE_ENV === 'development'
         ? `http://localhost:3000/api/proxy`
-        : `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/proxy`,
+        : `https://dc-commerce-extensions.vercel.app/api/proxy`,
     parameters: {
       clientId: 'e4289502-7960-4387-b48a-a030e447800e',
       organizationId: 'f_ecom_bbsz_stg',
@@ -26,8 +26,6 @@ function MyApp({ Component, pageProps }) {
   const sdk = new SDK(sdkConfig)
 
   useEffect(() => {
-    console.log('isReady', isReady)
-    console.log('useDevCMSExt', useDevCMSExt)
     sdk.login()
 
     if (useDevCMSExt && isReady) {
