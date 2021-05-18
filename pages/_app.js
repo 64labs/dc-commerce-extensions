@@ -26,6 +26,8 @@ function MyApp({ Component, pageProps }) {
   const sdk = new SDK(sdkConfig)
 
   useEffect(() => {
+    console.log('isReady', isReady)
+    console.log('useDevCMSExt', useDevCMSExt)
     sdk.login()
 
     if (useDevCMSExt && isReady) {
