@@ -8,10 +8,13 @@ function MyApp({ Component, pageProps }) {
   const { query, isReady } = useRouter()
   const [cms, setCMS] = useState()
 
-  const isDev = process.env.NODE_ENV === 'development' || query.dev === 'true'
+  const useDevCMSExt = query.dev === 'true'
 
   const sdkConfig = {
-    proxyPath: isDev ? `http://localhost:3000/api/proxy` : 'https://dc-commerce-extensions.vercel.app/api/proxy',
+    proxyPath:
+      process.env.NODE_ENV === 'development'
+        ? `http://localhost:3000/api/proxy`
+        : 'https://dc-commerce-extensions.vercel.app/api/proxy',
     parameters: {
       clientId: 'e4289502-7960-4387-b48a-a030e447800e',
       organizationId: 'f_ecom_bbsz_stg',
@@ -25,7 +28,7 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     sdk.login()
 
-    if (isDev && isReady) {
+    if (useDevCMSExt && isReady) {
       setCMS({
         field: {
           async getValue() {
@@ -47,7 +50,7 @@ function MyApp({ Component, pageProps }) {
         setCMS(cms)
       })()
     }
-  }, [isReady, isDev])
+  }, [isReady, useDevCMSExt])
 
   if (!cms) {
     return null
