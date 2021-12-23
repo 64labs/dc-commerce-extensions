@@ -9,14 +9,11 @@ import {
   Image,
   Input,
   InputGroup,
-  InputRightElement,
   Progress,
   Stack,
   Text,
   Badge,
   Accordion,
-  CloseButton,
-  Wrap,
   InputLeftElement,
 } from '@chakra-ui/react'
 import { SearchIcon, SmallAddIcon } from '@chakra-ui/icons'
