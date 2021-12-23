@@ -4,6 +4,7 @@ import { ChakraProvider, Flex } from '@chakra-ui/react'
 import { SDK, SDKProvider } from '../sdk'
 import { CMSProvider } from '../cms'
 
+// https://dc-commerce-extensions.vercel.app/product-selector
 function MyApp({ Component, pageProps }) {
   const { query, isReady } = useRouter()
   const [cms, setCMS] = useState()
@@ -16,10 +17,10 @@ function MyApp({ Component, pageProps }) {
         ? `http://localhost:3000/api/proxy`
         : `https://dc-commerce-extensions.vercel.app/api/proxy`,
     parameters: {
-      clientId: 'e4289502-7960-4387-b48a-a030e447800e',
-      organizationId: 'f_ecom_bbsz_stg',
-      shortCode: 'cvwcejn4',
-      siteId: 'shoecarnival',
+      clientId: 'a0ef1339-b861-417a-be6b-b8111704417d',
+      organizationId: 'f_ecom_bhhq_dev',
+      shortCode: '0xbgcdsq',
+      siteId: '64labs',
     },
   }
 
