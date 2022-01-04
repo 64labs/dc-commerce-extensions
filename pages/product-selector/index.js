@@ -107,7 +107,7 @@ export default function ProductSelector() {
                     {state.selections.map((item) => (
                       <AspectRatio ratio={1.178} w="80px">
                         <Image
-                          src={`${item.image.disBaseLink}?sw=250`}
+                          src={`${item.image.link}?sw=250`}
                           borderRadius="2px"
                           border="1px solid"
                           borderColor="gray.100"
@@ -167,7 +167,7 @@ export default function ProductSelector() {
                             onMouseLeave={() => toggleActionsOverlay(hit.productId)}
                           >
                             <AspectRatio ratio={1.178} w="100px">
-                              <Image src={`${hit.image.disBaseLink}?sw=250`} ignoreFallback={true} />
+                              <Image src={`${hit.image.link}?w=250`} ignoreFallback={true} />
                             </AspectRatio>
 
                             <Flex ml={6} flex={1} w="full" alignItems="center">

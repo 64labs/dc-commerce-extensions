@@ -100,7 +100,7 @@ export default function ProductItem({
 
   const getSwatch = (value) => {
     const group = productSwatches?.find((group) => group.variationAttributes[0]?.values[0].value === value)
-    return <Image src={group?.images[0]?.disBaseLink} boxSize={8} objectFit="cover" borderRadius="full" />
+    return <Image src={group?.images[0]?.link} boxSize={8} objectFit="cover" borderRadius="full" />
   }
 
   return (
@@ -134,7 +134,7 @@ export default function ProductItem({
           >
             <Flex w="full" alignItems="center">
               <AspectRatio ratio={1.178} w="120px">
-                <Image src={`${(item.selectedImage || item.image).disBaseLink}?sw=250`} ignoreFallback={true} />
+                <Image src={`${(item.selectedImage || item.image).link}?w=250`} ignoreFallback={true} />
               </AspectRatio>
 
               <Box ml={6} flex={1}>
@@ -184,14 +184,14 @@ export default function ProductItem({
                   {productImagesForSelectedColor?.map((image, imageIndex) => {
                     return (
                       <Box
-                        key={`${image.disBaseLink}-imageIndex`}
+                        key={`${image.link}-imageIndex`}
                         border="2px solid"
-                        borderColor={item.image?.disBaseLink === image.disBaseLink ? 'blue.500' : 'transparent'}
+                        borderColor={item.image?.link === image.link ? 'blue.500' : 'transparent'}
                         onClick={() => setSelectionImage(index, imageIndex, image)}
                       >
                         <AspectRatio ratio={1.178} w="120px">
                           <Image
-                            src={`${image.disBaseLink}?sw=250`}
+                            src={`${image.link}?w=250`}
                             objectFit="cover"
                             borderRadius="full"
                             ignoreFallback={true}
