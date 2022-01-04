@@ -89,7 +89,7 @@ export default function ProductItem({
     (group) => group.viewType === 'swatch' && group.variationAttributes
   )
 
-  const productImages = product?.imageGroups.filter((group) => group.viewType === 'hi-res' && group.variationAttributes)
+  const productImages = product?.imageGroups.filter((group) => group.viewType === 'large' && group.variationAttributes)
 
   const selectedVariant = product?.variants.find((variant) => variant.productId === item.representedProduct?.id)
 
@@ -190,12 +190,7 @@ export default function ProductItem({
                         onClick={() => setSelectionImage(index, imageIndex, image)}
                       >
                         <AspectRatio ratio={1.178} w="120px">
-                          <Image
-                            src={`${image.link}?w=250`}
-                            objectFit="cover"
-                            borderRadius="full"
-                            ignoreFallback={true}
-                          />
+                          <Image src={`${image.link}?w=250`} objectFit="cover" ignoreFallback={true} />
                         </AspectRatio>
                       </Box>
                     )
