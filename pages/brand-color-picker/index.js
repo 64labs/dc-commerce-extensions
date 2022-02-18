@@ -97,7 +97,12 @@ export default function ProductSelector() {
                       {group.name}
                     </Text>
 
-                    <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(150px, 1fr));" gap={3}>
+                    <Box
+                      display="grid"
+                      gridTemplateColumns="repeat(auto-fill, minmax(150px, 1fr));"
+                      rowGap={3}
+                      columnGap={3}
+                    >
                       {group.colors?.map((color) => {
                         return (
                           <Button
