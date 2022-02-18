@@ -38,7 +38,7 @@ export default function ProductSelector() {
     colorOptionsContent: null,
   })
 
-  const { title, contentID } = cms.params.instance
+  const { title, contentID, groups } = cms.params.instance
 
   const mergeState = (data) => {
     setState((state) => ({ ...state, ...data }))
@@ -90,47 +90,49 @@ export default function ProductSelector() {
           </AccordionButton>
           <AccordionPanel>
             <Stack spacing={6}>
-              {state.colorOptionsContent?.groups.map((group) => {
-                return (
-                  <Stack>
-                    <Text fontSize="xs" color="gray.900" fontWeight={500}>
-                      {group.name}
-                    </Text>
+              {state.colorOptionsContent?.groups
+                .filter((group) => !Array.isArray(groups) || groups.includes(group.id))
+                .map((group) => {
+                  return (
+                    <Stack>
+                      <Text fontSize="xs" color="gray.900" fontWeight={500}>
+                        {group.name}
+                      </Text>
 
-                    <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(150px, 1fr));" gridGap={3}>
-                      {group.colors?.map((color) => {
-                        return (
-                          <Button
-                            display="block"
-                            variant="unstyled"
-                            align="flex-start"
-                            justifyContent="flex-start"
-                            _focus={{ outline: 'none' }}
-                            onClick={() => handleColorSelection(color)}
-                            height="auto"
-                            width="150px"
-                            borderRadius={0}
-                          >
-                            <Stack direction="row" align="center" justify="flex-start">
-                              <Box
-                                border="1px solid"
-                                borderColor={color.color === state.selectedColor?.color ? 'blue.500' : 'gray.300'}
-                                boxSize={10}
-                                padding="1px"
-                              >
-                                <Box boxSize="full" background={color.color}></Box>
-                              </Box>
-                              <Text fontSize="xs" whiteSpace="normal" lineHeight="16px" align="left" fontWeight={300}>
-                                {color.name}
-                              </Text>
-                            </Stack>
-                          </Button>
-                        )
-                      })}
-                    </Box>
-                  </Stack>
-                )
-              })}
+                      <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(150px, 1fr));" gridGap={3}>
+                        {group.colors?.map((color) => {
+                          return (
+                            <Button
+                              display="block"
+                              variant="unstyled"
+                              align="flex-start"
+                              justifyContent="flex-start"
+                              _focus={{ outline: 'none' }}
+                              onClick={() => handleColorSelection(color)}
+                              height="auto"
+                              width="150px"
+                              borderRadius={0}
+                            >
+                              <Stack direction="row" align="center" justify="flex-start">
+                                <Box
+                                  border="1px solid"
+                                  borderColor={color.color === state.selectedColor?.color ? 'blue.500' : 'gray.300'}
+                                  boxSize={10}
+                                  padding="1px"
+                                >
+                                  <Box boxSize="full" background={color.color}></Box>
+                                </Box>
+                                <Text fontSize="xs" whiteSpace="normal" lineHeight="16px" align="left" fontWeight={300}>
+                                  {color.name}
+                                </Text>
+                              </Stack>
+                            </Button>
+                          )
+                        })}
+                      </Box>
+                    </Stack>
+                  )
+                })}
             </Stack>
           </AccordionPanel>
         </AccordionItem>
