@@ -4,9 +4,8 @@ import { ChakraProvider, Flex } from '@chakra-ui/react'
 import { SDK, SDKProvider } from '../sdk'
 import { CMSProvider } from '../cms'
 
-// https://dc-commerce-extensions.vercel.app/product-selector
 function MyApp({ Component, pageProps }) {
-  const { query, isReady } = useRouter()
+  const { query, pathname, isReady } = useRouter()
   const [cms, setCMS] = useState()
 
   const useDevCMSExt = query.dev === 'true'
@@ -14,7 +13,7 @@ function MyApp({ Component, pageProps }) {
   const sdkConfig = {
     proxyPath:
       process.env.NODE_ENV === 'development'
-        ? `http://localhost:3001/api/proxy`
+        ? `http://localhost:3000/api/proxy`
         : `https://dc-commerce-extensions.vercel.app/api/proxy`,
     parameters: {
       clientId: 'a0ef1339-b861-417a-be6b-b8111704417d',
@@ -27,7 +26,10 @@ function MyApp({ Component, pageProps }) {
   const sdk = new SDK(sdkConfig)
 
   useEffect(() => {
-    sdk.login()
+    /** @todo - this is smelly, but fine for now */
+    if (pathname === '/product-selector') {
+      sdk.login()
+    }
 
     if (useDevCMSExt && isReady) {
       setCMS({
