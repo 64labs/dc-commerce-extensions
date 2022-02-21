@@ -5,25 +5,11 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
-  AspectRatio,
   Box,
   Button,
-  IconButton,
-  Center,
-  Container,
-  Flex,
-  Image,
-  Input,
-  InputGroup,
-  Progress,
   Stack,
   Text,
-  Badge,
-  InputLeftElement,
-  Wrap,
-  WrapItem,
 } from '@chakra-ui/react'
-import { SearchIcon, SmallAddIcon } from '@chakra-ui/icons'
 import { ContentClient } from 'dc-delivery-sdk-js'
 import { useCMS } from '../../cms'
 
