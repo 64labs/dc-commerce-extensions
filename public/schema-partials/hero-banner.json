@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "schema-partials/hero-banner.json",
+
+  "definitions": {
+    "fields": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "title": "Image",
+          "allOf": [{"$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/image-link"}]
+        },
+        "value": {
+          "title": "Value",
+          "description": "The option's text value",
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 255
+        }
+      }
+    }
+  }
+}
