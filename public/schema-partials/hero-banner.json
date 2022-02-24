@@ -1,21 +1,115 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "schema-partials/hero-banner.json",
+  "$id": "https://raw.githubusercontent.com/64labs/dc-commerce-extensions/main/public/schema-partials/hero-banner.json",
 
   "definitions": {
     "fields": {
       "type": "object",
       "properties": {
-        "image": {
-          "title": "Image",
-          "allOf": [{"$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/image-link"}]
-        },
-        "value": {
-          "title": "Value",
-          "description": "The option's text value",
+        "primaryHeading": {
+          "title": "Primary Heading",
+          "description": "Primary text in the overlay",
           "type": "string",
-          "minLength": 0,
           "maxLength": 255
+        },
+        "secondaryHeading": {
+          "title": "Secondary Heading",
+          "description": "Secondary text in the overlay",
+          "type": "string",
+          "maxLength": 255
+        },
+        "colorScheme": {
+          "title": "Theme",
+          "description": "select a a color theme",
+          "type": "string",
+          "enum": ["theme-1", "theme-2", "theme-3"]
+        },
+        "layout": {
+          "title": "Layout",
+          "description": "select a layout variation",
+          "type": "string",
+          "enum": ["overlay-1", "overlay-2", "overlay-3", "overlay-card"]
+        },
+        "icon": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "https://64labs.pwakit/style64-partials.json#/definitions/style64-icons"
+            }
+          ]
+        },
+        "background": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "https://64labs.pwakit/style64-partials.json#/definitions/style64-heroBackground"
+            }
+          ]
+        },
+        "ctaText": {
+          "title": "CTA Text",
+          "description": "Text for the primary call to action",
+          "type": "string",
+          "maxLength": 255
+        },
+        "ctaUrl": {
+          "title": "CTA URL Path",
+          "description": "Relative URL path for primary CTA",
+          "type": "string",
+          "maxLength": 255
+        },
+        "detailsText": {
+          "title": "Details link text",
+          "description": "Additional textual link in the overlay",
+          "type": "string",
+          "maxLength": 255
+        },
+        "fullDetails": {
+          "title": "Full details",
+          "description": "Enter full text to describe the offer or promotion",
+          "type": "string",
+          "format": "markdown"
+        },
+        "theming": {
+          "title": "Theming",
+          "type": "object",
+          "properties": {
+            "layout": {
+              "title": "Layout",
+              "type": "object",
+              "properties": {
+                "variant": {
+                  "title": "Layout",
+                  "description": "Select a layout variation",
+                  "type": "string",
+                  "ui:extension": {
+                    "name": "visual-enum",
+                    "params": {
+                      "contentType": "https://64labs.pwakit/style64-card.json",
+                      "contentID": "e59f61d4-7b64-496f-9fc7-094ad5d66f13"
+                    }
+                  }
+                }
+              }
+            },
+            "background": {
+              "title": "Overlay Color",
+              "type": "object",
+              "properties": {
+                "color": {
+                  "type": "object",
+                  "properties": {"name": {"type": "string"}, "value": {"type": "string"}},
+                  "ui:extension": {
+                    "name": "brand-color-picker",
+                    "params": {
+                      "contentID": "bb290df9-fab1-4e61-bf58-e6c835e58539",
+                      "groups": ["brandcolors", "gradients"]
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
