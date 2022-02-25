@@ -64,8 +64,9 @@ export default function ImagePicker() {
   useEffect(() => {
     ;(async () => {
       const currentValue = await cms.field.getValue()
-      console.log(currentValue)
-      setState(currentValue)
+      if (currentValue && currentValue.images) {
+        setState(currentValue)
+      }
     })()
   }, [])
 
@@ -78,7 +79,7 @@ export default function ImagePicker() {
       <Text fontSize="sm">{title || 'Images'}</Text>
 
       <Stack spacing={4}>
-        {state.images.map(({ data, image }, index) => {
+        {state?.images?.map(({ data, image }, index) => {
           return (
             <Box
               key={image.id}
