@@ -74,7 +74,7 @@ export default function ImagePicker() {
   }, [state])
 
   return (
-    <Stack spacing={2} paddingY={4}>
+    <Stack spacing={2}>
       <Text fontSize="sm">{title || 'Images'}</Text>
 
       <Stack spacing={4}>
