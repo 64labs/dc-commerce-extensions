@@ -90,7 +90,7 @@ export default function ImagePicker() {
               borderLeftColor="blue.500"
               borderRadius="2px"
             >
-              <Flex direction="row" align="center" gap={4}>
+              <Stack direction="row" align="center" spacing={4}>
                 <Box bg="gray.100" border="1px solid" borderColor="gray.200" position="relative">
                   <Image
                     src={`https://${image.defaultHost}/i/${image.endpoint}/${image.name}`}
@@ -166,7 +166,7 @@ export default function ImagePicker() {
                     </FormControl>
                   </Box>
                 </Stack>
-              </Flex>
+              </Stack>
 
               <Box position="absolute" right={2} top={2}>
                 <IconButton
