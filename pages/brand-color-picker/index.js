@@ -13,11 +13,7 @@ import {
 import { ContentClient } from 'dc-delivery-sdk-js'
 import { useCMS } from '../../cms'
 
-const client = new ContentClient({
-  hubName: 'rsa',
-})
-
-export default function ProductSelector() {
+export default function BrandColorPicker({ hubName }) {
   const cms = useCMS()
   const [state, setState] = useState({
     selectedColor: null,
@@ -37,6 +33,9 @@ export default function ProductSelector() {
 
   useEffect(() => {
     ;(async () => {
+      const client = new ContentClient({
+        hubName,
+      })
       const currentValue = await cms.field.getValue()
       const { body } = await client.getContentItemById(contentID)
       mergeState({ selectedColor: currentValue, colorOptionsContent: body })
@@ -125,4 +124,12 @@ export default function ProductSelector() {
       </Accordion>
     </Box>
   )
+}
+
+export async function getServerSideProps({ query }) {
+  return {
+    props: {
+      hubName: query?.hubName || 'rsa',
+    },
+  }
 }
