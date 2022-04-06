@@ -22,7 +22,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import useProductSelector from '../../hooks/useProductSelector'
 import ProductItem from '../../components/product-item'
 
-export default function ProductSelector() {
+export default function ProductSelector({ productPickerUrl }) {
   const {
     state,
     moveCard,
@@ -36,7 +36,7 @@ export default function ProductSelector() {
     showSearch,
     setShowSearch,
     toggleActionsOverlay,
-  } = useProductSelector()
+  } = useProductSelector(productPickerUrl)
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -210,4 +210,12 @@ export default function ProductSelector() {
       </Container>
     </DndProvider>
   )
+}
+
+export async function getServerSideProps({ query }) {
+  return {
+    props: {
+      productPickerUrl: query?.productPickerUrl || null,
+    },
+  }
 }

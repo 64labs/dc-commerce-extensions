@@ -4,7 +4,7 @@ import update from 'immutability-helper'
 import { useSDK } from '../sdk'
 import { useCMS } from '../cms'
 
-export default function ProductSelector() {
+export default function ProductSelector(productPickerUrl = null) {
   const sdk = useSDK()
   const cms = useCMS()
 
@@ -40,7 +40,15 @@ export default function ProductSelector() {
     setState((_state) => ({ ..._state, selections: updatedSelections }))
     updateFieldValue(updatedSelections)
 
-    const product = await sdk.shopperProducts.getProduct({ parameters: { id: item.id, allImages: true } })
+    let product
+    if (productPickerUrl) {
+      const getProductResults = await fetch(
+        `${productPickerUrl}/api/product-picker/shopperProducts/getProduct?id=${item.id}&allImages=true`
+      )
+      product = await getProductResults.json()
+    } else {
+      product = await sdk.shopperProducts.getProduct({ parameters: { id: item.id, allImages: true } })
+    }
     setState((_state) => ({ ..._state, productsById: { ..._state.productsById, [product.id]: product } }))
   }
 
@@ -91,9 +99,17 @@ export default function ProductSelector() {
     e.preventDefault()
     try {
       mergeState({ loading: true, results: null })
-      const results = await sdk.shopperSearch.productSearch({
-        parameters: { limit: 25, offset: 0, q: state.searchTerm },
-      })
+      let results
+      if (productPickerUrl) {
+        const productSearchResults = await fetch(
+          `${productPickerUrl}/api/product-picker/shopperSearch/productSearch?q=${state.searchTerm}`
+        )
+        results = await productSearchResults.json()
+      } else {
+        results = await sdk.shopperSearch.productSearch({
+          parameters: { limit: 25, offset: 0, q: state.searchTerm },
+        })
+      }
       mergeState({ results })
     } catch (error) {
       console.log(error)
@@ -123,9 +139,20 @@ export default function ProductSelector() {
         const selections = (await cms.field.getValue()) || []
         mergeState({ selections })
 
-        const { data } = await sdk.shopperProducts.getProducts({
-          parameters: { ids: selections.map((item) => item.id).join(','), allImages: true },
-        })
+        let data
+        const ids = selections.map((item) => item.id).join(',')
+
+        if (productPickerUrl) {
+          const getProductsResults = await fetch(
+            `${productPickerUrl}/api/product-picker/shopperProducts/getProducts?ids=$${ids}&allImages=true`
+          )
+          data = await getProductsResults.json()?.data
+        } else {
+          data = await sdk.shopperProducts.getProducts({
+            parameters: { ids, allImages: true },
+          })?.data
+        }
+
         mergeState({
           productsById:
             data?.reduce((acc, product) => {

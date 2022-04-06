@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     /** @todo - this is smelly, but fine for now */
-    if (pathname === '/product-selector') {
+    if (pathname === '/product-selector' && !query?.productPickerUrl) {
       sdk.login()
     }
 
