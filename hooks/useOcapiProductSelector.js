@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import { nanoid } from 'nanoid'
 import update from 'immutability-helper'
-import { useSDK } from '../sdk'
 import { useCMS } from '../cms'
+import { useOcapi } from './useOcapi'
 
-export default function ProductSelector(productPickerUrl = null) {
-  const sdk = useSDK()
+export default function ProductSelector() {
   const cms = useCMS()
+  const installationParams = cms?.params?.installation || {}
+  const { productSearch, getProducts } = useOcapi(installationParams)
 
   const [state, setState] = useState({
     loading: false,
@@ -41,14 +42,7 @@ export default function ProductSelector(productPickerUrl = null) {
     updateFieldValue(updatedSelections)
 
     let product
-    if (productPickerUrl) {
-      const getProductResults = await fetch(
-        `${productPickerUrl}/api/product-picker/shopperProducts/getProduct?id=${item.id}&allImages=true`
-      )
-      product = await getProductResults.json()
-    } else {
-      product = await sdk.shopperProducts.getProduct({ parameters: { id: item.id, allImages: true } })
-    }
+    product = await getProducts(item.id)
     setState((_state) => ({ ..._state, productsById: { ..._state.productsById, [product.id]: product } }))
   }
 
@@ -100,16 +94,7 @@ export default function ProductSelector(productPickerUrl = null) {
     try {
       mergeState({ loading: true, results: null })
       let results
-      if (productPickerUrl) {
-        const productSearchResults = await fetch(
-          `${productPickerUrl}/api/product-picker/shopperSearch/productSearch?q=${state.searchTerm}`
-        )
-        results = await productSearchResults.json()
-      } else {
-        results = await sdk.shopperSearch.productSearch({
-          parameters: { limit: 25, offset: 0, q: state.searchTerm },
-        })
-      }
+      results = await productSearch(state.searchTerm)
       mergeState({ results })
     } catch (error) {
       console.log(error)
@@ -142,16 +127,7 @@ export default function ProductSelector(productPickerUrl = null) {
         let data
         const ids = selections.map((item) => item.id).join(',')
 
-        if (productPickerUrl) {
-          const getProductsResults = await fetch(
-            `${productPickerUrl}/api/product-picker/shopperProducts/getProducts?ids=$${ids}&allImages=true`
-          )
-          data = await getProductsResults.json()?.data
-        } else {
-          data = await sdk.shopperProducts.getProducts({
-            parameters: { ids, allImages: true },
-          })?.data
-        }
+        data = await getProducts(ids)
 
         mergeState({
           productsById:

@@ -19,10 +19,14 @@ import {
 import { SearchIcon, SmallAddIcon } from '@chakra-ui/icons'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import useProductSelector from '../../hooks/useProductSelector'
+import useOcapiProductSelector from '../../hooks/useOcapiProductSelector'
 import ProductItem from '../../components/product-item'
 
-export default function ProductSelector({ productPickerUrl }) {
+const domain = 'development.sweatybetty.com'
+const siteId = 'SB-US'
+const clientId = '498a02fc-e957-4bfa-bbed-3c771d9a9c60'
+
+export default function ProductSelector({}) {
   const {
     state,
     moveCard,
@@ -36,7 +40,7 @@ export default function ProductSelector({ productPickerUrl }) {
     showSearch,
     setShowSearch,
     toggleActionsOverlay,
-  } = useProductSelector(productPickerUrl)
+  } = useOcapiProductSelector()
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -76,10 +80,10 @@ export default function ProductSelector({ productPickerUrl }) {
               </Stack>
 
               {/* <Box>
-                  <Button colorScheme="blue" size="sm" onClick={() => setShowSearch(true)}>
-                    Add Products
-                  </Button>
-                </Box> */}
+                    <Button colorScheme="blue" size="sm" onClick={() => setShowSearch(true)}>
+                      Add Products
+                    </Button>
+                  </Box> */}
             </Stack>
           )}
 
@@ -104,18 +108,18 @@ export default function ProductSelector({ productPickerUrl }) {
                   </Flex>
 
                   {/* <Wrap>
-                      {state.selections.map((item) => (
-                        <AspectRatio ratio={1.178} w="80px">
-                          <Image
-                            src={`${item.image.link}?sw=250`}
-                            borderRadius="2px"
-                            border="1px solid"
-                            borderColor="gray.100"
-                            ignoreFallback={true}
-                          />
-                        </AspectRatio>
-                      ))}
-                    </Wrap> */}
+                        {state.selections.map((item) => (
+                          <AspectRatio ratio={1.178} w="80px">
+                            <Image
+                              src={`${item.image.link}?sw=250`}
+                              borderRadius="2px"
+                              border="1px solid"
+                              borderColor="gray.100"
+                              ignoreFallback={true}
+                            />
+                          </AspectRatio>
+                        ))}
+                      </Wrap> */}
                 </Flex>
 
                 <Box as="form" position="relative" onSubmit={handleSearch}>
@@ -210,12 +214,4 @@ export default function ProductSelector({ productPickerUrl }) {
       </Container>
     </DndProvider>
   )
-}
-
-export async function getServerSideProps({ query }) {
-  return {
-    props: {
-      productPickerUrl: query?.productPickerUrl || null,
-    },
-  }
 }

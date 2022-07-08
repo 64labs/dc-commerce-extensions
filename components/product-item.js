@@ -184,13 +184,13 @@ export default function ProductItem({
                   {productImagesForSelectedColor?.map((image, imageIndex) => {
                     return (
                       <Box
-                        key={`${image.link}-imageIndex`}
+                        key={`${image?.link}-imageIndex`}
                         border="2px solid"
-                        borderColor={item.image?.link === image.link ? 'blue.500' : 'transparent'}
+                        borderColor={item.image?.link === image?.link ? 'blue.500' : 'transparent'}
                         onClick={() => setSelectionImage(index, imageIndex, image)}
                       >
                         <AspectRatio ratio={1.178} w="120px">
-                          <Image src={`${image.link}?w=250`} objectFit="cover" ignoreFallback={true} />
+                          <Image src={`${image?.link}?w=250`} objectFit="cover" ignoreFallback={true} />
                         </AspectRatio>
                       </Box>
                     )
