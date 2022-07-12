@@ -34,22 +34,11 @@ export default function ProductSelector(productPickerUrl = null) {
       name: _item.productName,
       price: _item.price,
       image: _item.image,
-      color: _item?.variationAttributes?.find?.((varAttr) => varAttr.id === 'color')?.values[0],
+      color: _item.color || _item?.variationAttributes?.find?.((varAttr) => varAttr.id === 'color')?.values[0],
     }
     const updatedSelections = [...state.selections, { ...item, id: item.id }]
     setState((_state) => ({ ..._state, selections: updatedSelections }))
     updateFieldValue(updatedSelections)
-
-    let product
-    if (productPickerUrl) {
-      const getProductResults = await fetch(
-        `${productPickerUrl}/api/product-picker/shopperProducts/getProduct?id=${item.id}&allImages=true`
-      )
-      product = await getProductResults.json()
-    } else {
-      product = await sdk.shopperProducts.getProduct({ parameters: { id: item.id, allImages: true } })
-    }
-    setState((_state) => ({ ..._state, productsById: { ..._state.productsById, [product.id]: product } }))
   }
 
   const removeProductSelection = async (itemIndex) => {
@@ -102,9 +91,25 @@ export default function ProductSelector(productPickerUrl = null) {
       let results
       if (productPickerUrl) {
         const productSearchResults = await fetch(
-          `${productPickerUrl}/api/product-picker/shopperSearch/productSearch?q=${state.searchTerm}`
+          `${productPickerUrl}/api/product-picker/shopperSearch/productSearch?q=${state.searchTerm}&expand=variations,represented_products`
         )
         results = await productSearchResults.json()
+
+        if (results._type === 'product_search_result') {
+          const ids = results.hits.map((product) => product.productId).join(',')
+          const getProductsResults = await fetch(
+            `${productPickerUrl}/api/product-picker/shopperProducts/getProducts?ids=${ids}&allImages=true`
+          )
+          const json = await getProductsResults.json()
+          const data = json?.data
+
+          const productMap =
+            data?.reduce((acc, product) => {
+              return { ...acc, [product.id]: product }
+            }, {}) || {}
+
+          setState((_state) => ({ ..._state, productsById: { ..._state.productsById, ...productMap } }))
+        }
       } else {
         results = await sdk.shopperSearch.productSearch({
           parameters: { limit: 25, offset: 0, q: state.searchTerm },
@@ -146,18 +151,21 @@ export default function ProductSelector(productPickerUrl = null) {
           const getProductsResults = await fetch(
             `${productPickerUrl}/api/product-picker/shopperProducts/getProducts?ids=${ids}&allImages=true`
           )
-          data = await getProductsResults.json()?.data
+          const json = await getProductsResults.json()
+          data = json?.data
         } else {
           data = await sdk.shopperProducts.getProducts({
             parameters: { ids, allImages: true },
           })?.data
         }
 
+        const objMap =
+          data?.reduce((acc, product) => {
+            return { ...acc, [product.id]: product }
+          }, {}) || {}
+
         mergeState({
-          productsById:
-            data?.reduce((acc, product) => {
-              return { ...acc, [product.id]: product }
-            }, {}) || {},
+          productsById: objMap,
         })
       } catch (err) {
         console.log(err.message)

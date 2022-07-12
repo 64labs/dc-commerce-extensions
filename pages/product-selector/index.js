@@ -152,7 +152,22 @@ export default function ProductSelector({ productPickerUrl }) {
                     <Text fontSize="sm">Showing 1 - 25 of {state.results.total}</Text>
                     <Stack>
                       {state.results?.hits?.map((hit) => {
+                        const product = state.productsById[hit.productId]
                         const selectedCount = state.selections.filter((item) => item.id === hit.productId).length
+
+                        const productImages = product?.imageGroups.filter(
+                          (group) => group.viewType === 'large' && group.variationAttributes
+                        )
+                        const selectedVariant = product?.variants.find(
+                          (variant) => variant.productId === hit.representedProduct?.id
+                        )
+                        const selectedColorValue = hit.color?.value || selectedVariant?.variationValues.color
+                        const productImagesForSelectedColor =
+                          productImages?.find(
+                            (group) => group.variationAttributes[0]?.values[0].value === selectedColorValue
+                          )?.images || []
+
+                        const selectedImage = productImagesForSelectedColor?.[0] || hit?.image
 
                         return (
                           <Flex
@@ -166,8 +181,16 @@ export default function ProductSelector({ productPickerUrl }) {
                             onMouseEnter={() => toggleActionsOverlay(hit.productId)}
                             onMouseLeave={() => toggleActionsOverlay(hit.productId)}
                           >
-                            <AspectRatio ratio={1.178} w="100px">
-                              <Image src={`${hit?.image?.link}?w=250`} ignoreFallback={true} />
+                            <AspectRatio ratio={1} w="100px">
+                              {selectedImage ? (
+                                <Image
+                                  src={`${selectedImage.disBaseLink}?sw=250`}
+                                  objectFit="contain"
+                                  ignoreFallback={true}
+                                />
+                              ) : (
+                                <Box w="full" h="full" bg="gray.500" />
+                              )}
                             </AspectRatio>
 
                             <Flex ml={6} flex={1} w="full" alignItems="center">
@@ -193,7 +216,7 @@ export default function ProductSelector({ productPickerUrl }) {
                                   icon={<SmallAddIcon boxSize={8} />}
                                   size="lg"
                                   borderRadius="full"
-                                  onClick={() => addProductSelection(hit)}
+                                  onClick={() => addProductSelection({ ...hit, image: selectedImage })}
                                 />
                               </Center>
                             )}

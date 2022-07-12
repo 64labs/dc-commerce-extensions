@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import {
   AspectRatio,
   Box,
@@ -85,9 +85,13 @@ export default function ProductItem({
 
   const colorAttributeValues = product?.variationAttributes.find((varAttr) => varAttr.id === 'color').values
 
-  const productSwatches = product?.imageGroups.filter(
-    (group) => group.viewType === 'swatch' && group.variationAttributes
-  )
+  let productSwatches = product?.imageGroups.filter((group) => group.viewType === 'swatch' && group.variationAttributes)
+
+  if (!productSwatches || productSwatches.length === 0) {
+    productSwatches = colorAttributeValues?.map((color) => {
+      return { images: [color.imageSwatch], variationAttributes: [{ values: [{ value: color.value }] }] }
+    })
+  }
 
   const productImages = product?.imageGroups.filter((group) => group.viewType === 'large' && group.variationAttributes)
 
@@ -103,15 +107,14 @@ export default function ProductItem({
     return <Image src={group?.images[0]?.link} boxSize={8} objectFit="cover" borderRadius="full" />
   }
 
+  useEffect(() => {
+    if (productImagesForSelectedColor?.length > 0) {
+      setSelectionImage(index, 0, productImagesForSelectedColor[0])
+    }
+  }, [productImagesForSelectedColor])
+
   return (
-    <AccordionItem
-      ref={ref}
-      data-handler-id={handlerId}
-      bg="white"
-      opacity={product ? 1 : 0.4}
-      border={0}
-      opacity={opacity}
-    >
+    <AccordionItem ref={ref} data-handler-id={handlerId} bg="white" border={0} opacity={opacity}>
       {({ isExpanded }) => (
         <Box
           borderTop="1px solid"
@@ -133,8 +136,12 @@ export default function ProductItem({
             _focus={{ outline: 'none' }}
           >
             <Flex w="full" alignItems="center">
-              <AspectRatio ratio={1.178} w="120px">
-                <Image src={`${(item.selectedImage || item.image).link}?w=250`} ignoreFallback={true} />
+              <AspectRatio ratio={1} w="120px">
+                <Image
+                  src={`${(item.selectedImage || item.image).disBaseLink}?sw=250`}
+                  objectFit="contain"
+                  ignoreFallback={true}
+                />
               </AspectRatio>
 
               <Box ml={6} flex={1}>
@@ -189,8 +196,8 @@ export default function ProductItem({
                         borderColor={item.image?.link === image?.link ? 'blue.500' : 'transparent'}
                         onClick={() => setSelectionImage(index, imageIndex, image)}
                       >
-                        <AspectRatio ratio={1.178} w="120px">
-                          <Image src={`${image?.link}?w=250`} objectFit="cover" ignoreFallback={true} />
+                        <AspectRatio ratio={1} w="120px">
+                          <Image src={`${image?.disBaseLink}?sw=250`} objectFit="contain" ignoreFallback={true} />
                         </AspectRatio>
                       </Box>
                     )
