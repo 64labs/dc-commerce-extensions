@@ -7,7 +7,7 @@ import { CUIAutoComplete } from '../../components/autocomplete'
 export default function CategorySelector() {
   const { categories, selectedSiteId, onSelectSiteId, onSelectCategory, siteIds, savedValue } = useCategorySelector()
   return (
-    <Box>
+    <Box height="335px">
       {selectedSiteId && siteIds?.length > 1 && (
         <Button width="fit-content" variant="ghost" onClick={() => onSelectSiteId(null)}>
           <HStack spacing="0.5">
@@ -27,7 +27,7 @@ export default function CategorySelector() {
             </HStack>
           </Stack>
         ) : (
-          <Stack spacing={5}>
+          <Stack spacing={0}>
             <Text align="center">
               Selected Site:{' '}
               <Text as="span" fontWeight="bold">
@@ -36,6 +36,7 @@ export default function CategorySelector() {
             </Text>
             {categories ? (
               <CUIAutoComplete
+                listStyleProps={{ maxHeight: '175px', overflowY: 'auto' }}
                 onSelectedItemChange={(selectedCategoryId) => {
                   onSelectCategory(selectedCategoryId)
                 }}
