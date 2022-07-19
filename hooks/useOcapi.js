@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react'
 export const useOcapi = ({ domain, siteId, clientId }) => {
   const [authToken, setAuthToken] = useState()
   useEffect(() => {
-    getAuthToken()
+    if (siteId) {
+      getAuthToken()
+    }
   }, [])
-  const getAuthToken = async () => {
-    const fetchUrl = `/api/ocapi/auth?clientId=${clientId}&siteId=${siteId}&domain=${domain}`
+  const getAuthToken = async (_siteId) => {
+    const fetchUrl = `/api/ocapi/auth?clientId=${clientId}&siteId=${siteId || _siteId}&domain=${domain}`
     const response = await fetch(fetchUrl)
     const json = await response.json()
     setAuthToken(json?.token)
@@ -23,8 +25,16 @@ export const useOcapi = ({ domain, siteId, clientId }) => {
     const json = await response.json()
     return json
   }
+  const getCategories = async (_siteId) => {
+    await getAuthToken(_siteId)
+    const fetchUrl = `/api/ocapi/get-categories?clientId=${clientId}&siteId=${_siteId}&domain=${domain}&token=${authToken}`
+    const response = await fetch(fetchUrl)
+    const json = await response.json()
+    return json
+  }
   return {
     getProducts,
     productSearch,
+    getCategories,
   }
 }

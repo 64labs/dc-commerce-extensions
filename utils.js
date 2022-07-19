@@ -29,3 +29,19 @@ export const keysToCamel = (obj) => {
 
   return obj
 }
+
+/**
+ * Flattens a tree data structure into an array.
+ * @param {*} node
+ * @returns
+ */
+export const flatten = (node, key = 'children') => {
+  const children = (node[key] || []).reduce((a, b) => {
+    return Array.isArray(b[key]) && !!b[key].length ? { ...a, ...flatten(b, key) } : { ...a, [b.id]: b }
+  }, {})
+
+  return {
+    [node.id]: node,
+    ...children,
+  }
+}
