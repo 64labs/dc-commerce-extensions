@@ -144,7 +144,7 @@ export default function ProductSelector(productPickerUrl = null) {
 
         if (productPickerUrl) {
           const getProductsResults = await fetch(
-            `${productPickerUrl}/api/product-picker/shopperProducts/getProducts?ids=$${ids}&allImages=true`
+            `${productPickerUrl}/api/product-picker/shopperProducts/getProducts?ids=${ids}&allImages=true`
           )
           data = await getProductsResults.json()?.data
         } else {
