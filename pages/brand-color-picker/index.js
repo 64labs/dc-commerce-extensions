@@ -20,7 +20,12 @@ export default function BrandColorPicker({ hubName }) {
     colorOptionsContent: null,
   })
 
-  const { title, contentID, groups } = cms.params.instance
+  let { contentID } = cms.params.installation || {}
+  const { title, groups } = cms.params.instance
+
+  if (!contentID) {
+    contentID = cms.params.instance.contentID
+  }
 
   const mergeState = (data) => {
     setState((state) => ({ ...state, ...data }))
