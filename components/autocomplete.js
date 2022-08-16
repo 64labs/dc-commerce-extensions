@@ -7,7 +7,7 @@ import { FormLabel } from '@chakra-ui/form-control'
 import { Stack, Box, List, ListItem, ListIcon } from '@chakra-ui/layout'
 import { Button } from '@chakra-ui/button'
 import { Input, InputGroup, InputRightElement } from '@chakra-ui/input'
-import { CheckCircleIcon, ArrowDownIcon, ArrowUpIcon, CloseIcon } from '@chakra-ui/icons'
+import { CheckCircleIcon, TriangleDownIcon } from '@chakra-ui/icons'
 
 function defaultOptionFilterFunc(items, inputValue) {
   return matchSorter(items, inputValue, { keys: ['value', 'label'] })
@@ -147,15 +147,21 @@ export const CUIAutoComplete = (props) => {
             />
             {selectedItem && (
               <InputRightElement
+                justifyContent="flex-end"
                 children={
-                  <CloseIcon width={3} height={3} color="black" onClick={() => selectItem(null)} cursor="pointer" />
+                  <Box marginRight={1} marginBottom={3}>
+                    <TriangleDownIcon
+                      width={3}
+                      height={3}
+                      color="rgba(0,0,0,0.54)"
+                      onClick={() => (isOpen ? closeMenu() : disclosureRef?.current?.focus?.())}
+                      cursor="pointer"
+                    />
+                  </Box>
                 }
               />
             )}
           </InputGroup>
-          <Button {...toggleButtonStyleProps} {...getToggleButtonProps()} aria-label="toggle menu">
-            {isOpen ? <ArrowUpIcon /> : <ArrowDownIcon />}
-          </Button>
         </>
       </Stack>
       <Box pb={4} mb={4}>

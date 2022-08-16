@@ -9,7 +9,13 @@ export default function CategorySelector() {
   return (
     <Box height="335px">
       {selectedSiteId && siteIds?.length > 1 && (
-        <Button width="fit-content" variant="ghost" onClick={() => onSelectSiteId(null)}>
+        <Button
+          width="fit-content"
+          height="fit-content"
+          variant="ghost"
+          _hover={{ textDecoration: 'underline' }}
+          onClick={() => onSelectSiteId(null)}
+        >
           <HStack spacing="0.5">
             <ChevronLeftIcon w={5} h={5} />
             <Text fontSize="sm">Change site</Text>
@@ -22,13 +28,25 @@ export default function CategorySelector() {
             <Text>Select which site's categories you want to view</Text>
             <HStack spacing="8px">
               {siteIds.map((id) => (
-                <Button onClick={() => onSelectSiteId(id)}>{id}</Button>
+                <Button
+                  backgroundColor="#e5e5e5"
+                  borderRadius="3px"
+                  height="30px"
+                  fontSize="14px"
+                  _hover={{
+                    backgroundColor: '#039be5',
+                    color: 'white',
+                  }}
+                  onClick={() => onSelectSiteId(id)}
+                >
+                  {id}
+                </Button>
               ))}
             </HStack>
           </Stack>
         ) : (
           <Stack spacing={0}>
-            <Text align="center">
+            <Text align="center" fontSize="14px">
               Selected Site:{' '}
               <Text as="span" fontWeight="bold">
                 {selectedSiteId}
@@ -47,6 +65,16 @@ export default function CategorySelector() {
                   label: `${categories[categoryId].name} (${categoryId})`,
                   value: categoryId,
                 }))}
+                inputStyleProps={{
+                  border: 0,
+                  borderRadius: 0,
+                  padding: 0,
+                  borderBottom: '1px solid black',
+                  fontSize: '13px',
+                  height: '26px',
+                  _focus: { borderBottom: '2px solid rgb(3,155,229)' },
+                  boxSizing: 'content-box',
+                }}
               />
             ) : (
               <Center>
