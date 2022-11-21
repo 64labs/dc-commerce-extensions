@@ -29,6 +29,7 @@ export default function CategorySelector() {
             <HStack spacing="8px">
               {siteIds.map((id) => (
                 <Button
+                  key={id}
                   backgroundColor="#e5e5e5"
                   borderRadius="3px"
                   height="30px"

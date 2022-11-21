@@ -25,11 +25,18 @@ export const useOcapi = ({ domain, siteId, clientId }) => {
     const json = await response.json()
     return json
   }
-  const getCategories = async (_siteId) => {
+  const getCategories = async (_siteId, includeHiddenCategories) => {
     await getAuthToken(_siteId)
     const fetchUrl = `/api/ocapi/get-categories?clientId=${clientId}&siteId=${_siteId}&domain=${domain}&token=${authToken}`
     const response = await fetch(fetchUrl)
     const json = await response.json()
+    if (includeHiddenCategories) {
+      const _fetchUrl = `/api/ocapi/get-categories?clientId=${clientId}&siteId=${_siteId}&domain=${domain}&token=${authToken}&categoryId=hidden`
+      const _response = await fetch(_fetchUrl)
+      const _json = await _response.json()
+      const mergedCategories = { ...json, categories: json?.categories?.concat(_json?.categories) }
+      return mergedCategories
+    }
     return json
   }
   return {

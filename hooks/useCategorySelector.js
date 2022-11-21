@@ -9,7 +9,7 @@ export default function useCategorySelector() {
   const [savedValue, setSavedValue] = useState()
   const cms = useCMS()
   const installationParams = cms?.params?.installation || {}
-  const { apiHost, clientId, siteIds = [] } = installationParams
+  const { apiHost, clientId, siteIds = [], includeHiddenCategories = false } = installationParams
 
   const { getCategories } = useOcapi({ domain: apiHost, clientId, siteId: selectedSiteId })
 
@@ -40,7 +40,7 @@ export default function useCategorySelector() {
     setCategories(null)
     if (siteId) {
       // fetch categories
-      const rootCategory = await getCategories(siteId)
+      const rootCategory = await getCategories(siteId, includeHiddenCategories)
       const flattenedCategories = flatten(rootCategory, 'categories')
       setCategories(flattenedCategories)
     }
