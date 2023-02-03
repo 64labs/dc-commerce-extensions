@@ -36,9 +36,11 @@ export const keysToCamel = (obj) => {
  * @returns
  */
 export const flatten = (node, key = 'children') => {
-  const children = (node[key] || []).reduce((a, b) => {
-    return Array.isArray(b[key]) && !!b[key].length ? { ...a, ...flatten(b, key) } : { ...a, [b.id]: b }
-  }, {})
+  const children = (node[key] || [])
+    ?.filter((item) => !!item)
+    .reduce((a, b) => {
+      return Array.isArray(b[key]) && !!b[key].length ? { ...a, ...flatten(b, key) } : { ...a, [b.id]: b }
+    }, {})
 
   return {
     [node.id]: node,
