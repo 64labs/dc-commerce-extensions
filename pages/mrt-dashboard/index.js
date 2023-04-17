@@ -113,7 +113,7 @@ export default function MRTDashboard() {
                       <>
                         <CheckCircleIcon color="green" />
                         <Text fontSize="xs" color="gray.600">
-                          Invalidation is progress
+                          Invalidation is in progress.
                         </Text>
                       </>
                     )}
