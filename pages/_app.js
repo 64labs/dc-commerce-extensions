@@ -1,8 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { ChakraProvider, Flex } from '@chakra-ui/react'
+import { ChakraProvider, Flex, extendTheme } from '@chakra-ui/react'
 import { SDK, SDKProvider } from '../sdk'
 import { CMSProvider } from '../cms'
+
+const theme = extendTheme({
+  styles: {
+    global: {
+      'html, body': { height: '100%' },
+      '#__next': { height: '100%' },
+    },
+  },
+})
 
 function MyApp({ Component, pageProps }) {
   const { query, pathname, isReady } = useRouter()
@@ -49,7 +58,7 @@ function MyApp({ Component, pageProps }) {
       ;(async () => {
         const extSDK = await import('dc-extensions-sdk')
         const cms = await extSDK.init()
-        cms.frame.startAutoResizer()
+        cms.frame?.startAutoResizer()
         setCMS(cms)
       })()
     }
@@ -62,8 +71,8 @@ function MyApp({ Component, pageProps }) {
   return (
     <CMSProvider value={cms}>
       <SDKProvider value={sdk}>
-        <ChakraProvider>
-          <Flex direction="column">
+        <ChakraProvider theme={theme}>
+          <Flex direction="column" height="100%">
             <Component {...pageProps} />
           </Flex>
         </ChakraProvider>
