@@ -71,7 +71,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <CMSProvider value={cms}>
       <SDKProvider value={sdk}>
-        <ChakraProvider theme={theme}>
+        <ChakraProvider theme={cms.frame ? undefined : theme}>
           <Flex direction="column" height="100%">
             <Component {...pageProps} />
           </Flex>
