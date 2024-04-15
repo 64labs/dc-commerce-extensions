@@ -21,7 +21,8 @@ export default function BrandColorPicker({ hubName }) {
   })
 
   let { contentID } = cms.params.installation || {}
-  const { title, groups } = cms.params.instance
+  // Default Color will be an  object {color:...,name: ...}
+  const { title, groups, defaultColor } = cms.params.instance
 
   if (!contentID) {
     contentID = cms.params.instance.contentID
@@ -43,6 +44,11 @@ export default function BrandColorPicker({ hubName }) {
       })
       const currentValue = await cms.field.getValue()
       const { body } = await client.getContentItemById(contentID)
+      // this should indicate that teh value is empty and hasn't explicitly been set to empty so set
+      // it to the default value if specified
+      if (currentValue.name === null && defaultColor) {
+        currentValue = defaultColor
+      }
       mergeState({ selectedColor: currentValue, colorOptionsContent: body })
     })()
   }, [])
@@ -62,11 +68,21 @@ export default function BrandColorPicker({ hubName }) {
             <Box background={state.selectedColor?.color} boxSize="full" />
           </Box>
           <Text>{state.selectedColor?.name}</Text>
+          {state.selectedColor?.color && (
+            <Text
+              fontSize="xs"
+              color="gray.500"
+              cursor={'pointer'}
+              textDecoration={'underline'}
+              onClick={() => handleColorSelection({ color: null, name: 'No Color Selected' })}
+            >
+              {' '}
+              Remove Color
+            </Text>
+          )}
         </Stack>
       </Stack>
-
       <Box height={5} />
-
       <Accordion allowMultiple allowToggle>
         <AccordionItem>
           <AccordionButton paddingX={0} _focus={{ outline: 'none' }}>
