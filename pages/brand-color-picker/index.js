@@ -42,11 +42,11 @@ export default function BrandColorPicker({ hubName }) {
       const client = new ContentClient({
         hubName,
       })
-      const currentValue = await cms.field.getValue()
+      let currentValue = await cms.field.getValue()
       const { body } = await client.getContentItemById(contentID)
       // this should indicate that teh value is empty and hasn't explicitly been set to empty so set
       // it to the default value if specified
-      if (currentValue.name === null && defaultColor) {
+      if (!currentValue.name && defaultColor) {
         currentValue = defaultColor
       }
       mergeState({ selectedColor: currentValue, colorOptionsContent: body })
