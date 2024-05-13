@@ -54,10 +54,13 @@ const CacheInvalidation = () => {
   const createInvalidation = async () => {
     setStatus('loading')
 
-    const result = await fetch(`/api/mrt/target/${chosenTarget}/invalidation`, {
-      method: 'post',
-      body: JSON.stringify({ pattern: chosenPath }),
-    }).then((r) => r.json())
+    const result = await fetch(
+      `/api/mrt/target/${chosenTarget}/invalidation?path=${params.mrtApiPath}&token=${params.mrtApiToken}`,
+      {
+        method: 'post',
+        body: JSON.stringify({ pattern: chosenPath }),
+      }
+    ).then((r) => r.json())
 
     if (result.result) {
       setStatus('success')
@@ -83,7 +86,7 @@ const CacheInvalidation = () => {
           <Stack spacing="5">
             <Text fontSize="sm">
               Use this to invalidate the server-side-rendered (SSR) cache of a specific URL path or pattern. Only
-              trailing * will work. For example, "/elf-discovery/*" to clear all the pages in elf discovery.
+              trailing * will work. For example, "/test/*" to clear all the pages under the /test path.
             </Text>
 
             <Stack>
@@ -153,7 +156,7 @@ const MenuRoutingInvalidation = () => {
 
     await Promise.all(
       paths.map((path) =>
-        fetch(`/api/mrt/target/${chosenTarget}/invalidation`, {
+        fetch(`/api/mrt/target/${chosenTarget}/invalidation?path=${params.mrtApiPath}&token=${params.mrtApiToken}`, {
           method: 'post',
           body: JSON.stringify({ pattern: path }),
         }).then((r) => r.json())
