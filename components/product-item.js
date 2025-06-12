@@ -83,17 +83,17 @@ export default function ProductItem({
   const opacity = isDragging ? 0 : 1
   drag(drop(ref))
 
-  const colorAttributeValues = product?.variationAttributes.find((varAttr) => varAttr.id === 'color').values
+  const colorAttributeValues = product?.variationAttributes?.find((varAttr) => varAttr.id === 'color')?.values
 
-  const productSwatches = product?.imageGroups.filter(
+  const productSwatches = product?.imageGroups?.filter(
     (group) => group.viewType === 'swatch' && group.variationAttributes
   )
 
-  const productImages = product?.imageGroups.filter((group) => group.viewType === 'large' && group.variationAttributes)
+  const productImages = product?.imageGroups?.filter((group) => group.viewType === 'large' && group.variationAttributes)
 
-  const selectedVariant = product?.variants.find((variant) => variant.productId === item.representedProduct?.id)
+  const selectedVariant = product?.variants?.find((variant) => variant.productId === item.representedProduct?.id)
 
-  const selectedColorValue = item.color?.value || selectedVariant?.variationValues.color
+  const selectedColorValue = item.color?.value || selectedVariant?.variationValues?.color
 
   const productImagesForSelectedColor =
     productImages?.find((group) => group.variationAttributes[0]?.values[0].value === selectedColorValue)?.images || []
@@ -104,14 +104,7 @@ export default function ProductItem({
   }
 
   return (
-    <AccordionItem
-      ref={ref}
-      data-handler-id={handlerId}
-      bg="white"
-      opacity={product ? 1 : 0.4}
-      border={0}
-      opacity={opacity}
-    >
+    <AccordionItem ref={ref} data-handler-id={handlerId} bg="white" border={0} opacity={opacity}>
       {({ isExpanded }) => (
         <Box
           borderTop="1px solid"
